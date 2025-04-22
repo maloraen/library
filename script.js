@@ -1,6 +1,7 @@
 const myLibrary = [];
 
 function Book(title, author, pages, read = false) {
+    this.id = crypto.randomUUID();
     this.title = title;
     this.author = author;
     this.pages = pages;
@@ -12,6 +13,7 @@ function addBookToLibrary(title, author, pages, read = false) {
     myLibrary.push(newBook);
 }
 
+// DOM variables
 const libraryContainer = document.querySelector(".library");
 const addBookForm = document.querySelector(".add");
 const titleInput = document.querySelector("#title");
@@ -19,6 +21,52 @@ const authorInput = document.querySelector("#author");
 const pagesInput = document.querySelector("#pages");
 const readInput = document.querySelector("#read");
 const submitBtn = document.querySelector("#submit");
+
+function displayBooks() {
+    // clear books already being displayed
+    const currentBooks = document.querySelectorAll(".book.card");
+    currentBooks.forEach(book => book.remove());
+
+    myLibrary.forEach((book) => { // loop through array of books
+    // create a card for the book
+        const bookCard = document.createElement("div");
+        bookCard.classList.add("book", "card");
+        bookCard.setAttribute("data-id", book.id); // assign each book's unique id to their respective card
+
+    // fill in details within the card
+        // title
+        const titleHeader = document.createElement("h3");
+        titleHeader.textContent = "Title";
+        bookCard.appendChild(titleHeader);
+        const titleParagraph = document.createElement("p");
+        titleParagraph.textContent = book.title;
+        bookCard.appendChild(titleParagraph);
+        // author
+        const authorHeader = document.createElement("h3");
+        authorHeader.textContent = "Author";
+        bookCard.appendChild(authorHeader);
+        const authorParagraph = document.createElement("p");
+        authorParagraph.textContent = book.author;
+        bookCard.appendChild(authorParagraph);
+        // pages
+        const pagesHeader = document.createElement("h3");
+        pagesHeader.textContent = "Pages";
+        bookCard.appendChild(pagesHeader);
+        const pagesParagraph = document.createElement("p");
+        pagesParagraph.textContent = book.pages;
+        bookCard.appendChild(pagesParagraph);
+        // read status
+        const readHeader = document.createElement("h3");
+        readHeader.textContent = "Read?";
+        bookCard.appendChild(readHeader);
+        const readParagraph = document.createElement("p");
+        readParagraph.textContent = book.read;
+        bookCard.appendChild(readParagraph);
+    
+    // add each book card before the "new book" card
+        libraryContainer.insertBefore(bookCard, addBookForm);
+    })
+}
 
 submitBtn.addEventListener("click", (event) => {
     event.preventDefault();
@@ -29,46 +77,10 @@ submitBtn.addEventListener("click", (event) => {
     const read = readInput.checked ? "Yes" : "No";
 
     addBookToLibrary(title, author, pages, read);
-    addBookCard(title, author, pages, read);
+    displayBooks();
     console.log(myLibrary);
     console.log(`title: ${title} author: ${author} pages: ${pages} read: ${read}`);
 })
-
-function addBookCard(title, author, pages, read) {
-    const bookCard = document.createElement("div");
-    bookCard.classList.add("book");
-    bookCard.classList.add("card");
-
-    const titleHeader = document.createElement("h3");
-    titleHeader.textContent = "Title";
-    bookCard.appendChild(titleHeader);
-    const titleParagraph = document.createElement("p");
-    titleParagraph.textContent = title;
-    bookCard.appendChild(titleParagraph);
-
-    const authorHeader = document.createElement("h3");
-    authorHeader.textContent = "Author";
-    bookCard.appendChild(authorHeader);
-    const authorParagraph = document.createElement("p");
-    authorParagraph.textContent = author;
-    bookCard.appendChild(authorParagraph);
-
-    const pagesHeader = document.createElement("h3");
-    pagesHeader.textContent = "Pages";
-    bookCard.appendChild(pagesHeader);
-    const pagesParagraph = document.createElement("p");
-    pagesParagraph.textContent = pages;
-    bookCard.appendChild(pagesParagraph);
-
-    const readHeader = document.createElement("h3");
-    readHeader.textContent = "Read?";
-    bookCard.appendChild(readHeader);
-    const readParagraph = document.createElement("p");
-    readParagraph.textContent = read;
-    bookCard.appendChild(readParagraph);
-
-    libraryContainer.insertBefore(bookCard, addBookForm);
-}
 
 console.log(myLibrary);
 

@@ -1,11 +1,17 @@
+// DOM variables
+const libraryContainer = document.querySelector(".library");
+const addBookForm = document.querySelector(".add");
+const ghostCard = document.querySelector(".ghost.card");
+const newBookBtn = document.querySelector("#new-book");
+
 const myLibrary = [];
 
 function Book(title, author, pages, read = false) {
     this.id = crypto.randomUUID();
-    this.title = title;
-    this.author = author;
-    this.pages = pages;
-    this.read = read;
+    this.Title = title;
+    this.Author = author;
+    this.Pages = pages;
+    this["Read?"] = read;
 }
 
 function addBookToLibrary(title, author, pages, read = false) {
@@ -13,131 +19,69 @@ function addBookToLibrary(title, author, pages, read = false) {
     myLibrary.push(newBook);
 }
 
-// DOM variables
-const libraryContainer = document.querySelector(".library");
-const addBookForm = document.querySelector(".add");
-const titleInput = document.querySelector("#title");
-const authorInput = document.querySelector("#author");
-const pagesInput = document.querySelector("#pages");
-const readInput = document.querySelector("#read");
-const submitBtn = document.querySelector("#submit");
+function createCard(book) {
+    // create new card
+    const card = document.createElement("div");
+    card.classList.add("book", "card");
+    card.dataset.id = book.id;
 
-function displayBooks() {
-    // clear books already being displayed
-    const currentBooks = document.querySelectorAll(".book.card");
-    currentBooks.forEach(book => book.remove());
-
-    myLibrary.forEach((book) => { // loop through array of books
-    // create a card for the book
-        const bookCard = document.createElement("div");
-        bookCard.classList.add("book", "card");
-        bookCard.setAttribute("data-id", book.id); // assign each book's unique id to their respective card
-
-    // fill in details within the card
-        // title
-        const titleHeader = document.createElement("h3");
-        titleHeader.textContent = "Title";
-        bookCard.appendChild(titleHeader);
-        const titleParagraph = document.createElement("p");
-        titleParagraph.textContent = book.title;
-        bookCard.appendChild(titleParagraph);
-        // author
-        const authorHeader = document.createElement("h3");
-        authorHeader.textContent = "Author";
-        bookCard.appendChild(authorHeader);
-        const authorParagraph = document.createElement("p");
-        authorParagraph.textContent = book.author;
-        bookCard.appendChild(authorParagraph);
-        // pages
-        const pagesHeader = document.createElement("h3");
-        pagesHeader.textContent = "Pages";
-        bookCard.appendChild(pagesHeader);
-        const pagesParagraph = document.createElement("p");
-        pagesParagraph.textContent = book.pages;
-        bookCard.appendChild(pagesParagraph);
-        // read status
-        const readHeader = document.createElement("h3");
-        readHeader.textContent = "Read?";
-        bookCard.appendChild(readHeader);
-        const readParagraph = document.createElement("p");
-        readParagraph.textContent = book.read;
-        bookCard.appendChild(readParagraph);
-    
-    // add each book card before the "new book" card
-        libraryContainer.insertBefore(bookCard, ghostCard);
-    })
+    // fill in contents
+    for (const [key, value] of Object.entries(book)) {
+        if (key == "id") continue; // skip id
+        // create a header for each Book property
+        const header = document.createElement("h3");
+        header.textContent = key;
+        // create the paragraphs with the corresponding info
+        const paragraph = document.createElement("p");
+        paragraph.textContent = value;
+        // add each header/paragraph pair to the card
+        card.appendChild(header);
+        card.appendChild(paragraph);
+    }
+    // add new card before the ghost card
+    libraryContainer.insertBefore(card, ghostCard);
 }
 
-const ghostCard = document.querySelector(".ghost.card");
-const newBookBtn = document.querySelector("#new-book");
-newBookBtn.addEventListener("click", () => {
-    newBookBtn.remove();
-    ghostCard.classList.remove("ghost", "card");
-    ghostCard.classList.add("add", "card");
+function createInput(form, labelText, type, id) {
+    const label = document.createElement("label");
+    label.setAttribute("for", id);
+    label.textContent = labelText;
 
+    const input = document.createElement("input");
+    input.type = type;
+    input.id = id;
+    input.name = id;
+
+    form.appendChild(label);
+    form.appendChild(input);
+}
+
+function createForm() {
     // create form
     const form = document.createElement("form");
     form.classList.add("add-book");
     ghostCard.appendChild(form);
 
-    // create title label and input
-    const addTitleLabel = document.createElement("label");
-    addTitleLabel.setAttribute("for", "title");
-    addTitleLabel.textContent = "Title:";
-    form.appendChild(addTitleLabel);
-    const addTitleInput = document.createElement("input");
-    addTitleInput.setAttribute("type", "text");
-    addTitleInput.setAttribute("id", "title");
-    addTitleInput.setAttribute("name", "title");
-    form.appendChild(addTitleInput);
-
-    // create author label and input
-    const addAuthorLabel = document.createElement("label");
-    addAuthorLabel.setAttribute("for", "author");
-    addAuthorLabel.textContent = "Author:";
-    form.appendChild(addAuthorLabel);
-    const addAuthorInput = document.createElement("input");
-    addAuthorInput.setAttribute("type", "text");
-    addAuthorInput.setAttribute("id", "author");
-    addAuthorInput.setAttribute("name", "author");
-    form.appendChild(addAuthorInput);
-
-    // create pages label and input
-    const addPagesLabel = document.createElement("label");
-    addPagesLabel.setAttribute("for", "pages");
-    addPagesLabel.textContent = "Pages:";
-    form.appendChild(addPagesLabel);
-    const addPagesInput = document.createElement("input");
-    addPagesInput.setAttribute("type", "number");
-    addPagesInput.setAttribute("id", "pages");
-    addPagesInput.setAttribute("name", "pages");
-    form.appendChild(addPagesInput);
-
-    // create read label and input
-    const addReadLabel = document.createElement("label");
-    addReadLabel.setAttribute("for", "read");
-    addReadLabel.textContent = "Read?";
-    form.appendChild(addReadLabel);
-    const addReadInput = document.createElement("input");
-    addReadInput.setAttribute("type", "checkbox");
-    addReadInput.setAttribute("id", "read");
-    addReadInput.setAttribute("name", "read");
-    form.appendChild(addReadInput);
+    // create labels and inputs
+    createInput(form, "Title:", "text", "title");
+    createInput(form, "Author:", "text", "author");
+    createInput(form, "Pages:", "number", "pages");
+    createInput(form, "Read?", "checkbox", "read");
 
     // create submit button
     const submitButton = document.createElement("button");
-    submitButton.setAttribute("type", "submit");
-    submitButton.classList.add("submit");
+    submitButton.type = "submit";
+    submitButton.id = "submit";
     submitButton.textContent = "Add Book";
     form.appendChild(submitButton);
 
     submitButton.addEventListener("click", (event) => {
         event.preventDefault();
-    
-        const title = addTitleInput.value;
-        const author = addAuthorInput.value;
-        const pages = addPagesInput.value;
-        const read = addReadInput.checked ? "Yes" : "No";
+
+        const title = document.querySelector("#title").value;
+        const author = document.querySelector("#author").value;
+        const pages = document.querySelector("#pages").value;
+        const read = document.querySelector("#read").checked ? "Yes" : "No";
     
         addBookToLibrary(title, author, pages, read);
         ghostCard.classList.remove("add", "card");
@@ -146,8 +90,24 @@ newBookBtn.addEventListener("click", () => {
         ghostCard.appendChild(newBookBtn);
         displayBooks();
         console.log(myLibrary);
-        console.log(`title: ${title} author: ${author} pages: ${pages} read: ${read}`);
     })
-})
+}
 
-console.log(myLibrary);
+function displayBooks() {
+    // clear books already being displayed
+    const currentBooks = document.querySelectorAll(".book.card");
+    currentBooks.forEach(book => book.remove());
+
+    myLibrary.forEach((book) => { // loop through array of books
+        createCard(book); // create a card for each book
+    })
+}
+
+newBookBtn.addEventListener("click", () => {
+    // clear ghost card, turn it into the "add book" form card
+    newBookBtn.remove();
+    ghostCard.classList.remove("ghost", "card");
+    ghostCard.classList.add("add", "card");
+
+    createForm();
+})

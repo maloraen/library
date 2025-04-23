@@ -64,38 +64,90 @@ function displayBooks() {
         bookCard.appendChild(readParagraph);
     
     // add each book card before the "new book" card
-        libraryContainer.insertBefore(bookCard, addBookForm);
+        libraryContainer.insertBefore(bookCard, ghostCard);
     })
 }
 
-submitBtn.addEventListener("click", (event) => {
-    event.preventDefault();
+const ghostCard = document.querySelector(".ghost.card");
+const newBookBtn = document.querySelector("#new-book");
+newBookBtn.addEventListener("click", () => {
+    newBookBtn.remove();
+    ghostCard.classList.remove("ghost", "card");
+    ghostCard.classList.add("add", "card");
 
-    const title = titleInput.value;
-    const author = authorInput.value;
-    const pages = pagesInput.value;
-    const read = readInput.checked ? "Yes" : "No";
+    // create form
+    const form = document.createElement("form");
+    form.classList.add("add-book");
+    ghostCard.appendChild(form);
 
-    addBookToLibrary(title, author, pages, read);
-    displayBooks();
-    console.log(myLibrary);
-    console.log(`title: ${title} author: ${author} pages: ${pages} read: ${read}`);
+    // create title label and input
+    const addTitleLabel = document.createElement("label");
+    addTitleLabel.setAttribute("for", "title");
+    addTitleLabel.textContent = "Title:";
+    form.appendChild(addTitleLabel);
+    const addTitleInput = document.createElement("input");
+    addTitleInput.setAttribute("type", "text");
+    addTitleInput.setAttribute("id", "title");
+    addTitleInput.setAttribute("name", "title");
+    form.appendChild(addTitleInput);
+
+    // create author label and input
+    const addAuthorLabel = document.createElement("label");
+    addAuthorLabel.setAttribute("for", "author");
+    addAuthorLabel.textContent = "Author:";
+    form.appendChild(addAuthorLabel);
+    const addAuthorInput = document.createElement("input");
+    addAuthorInput.setAttribute("type", "text");
+    addAuthorInput.setAttribute("id", "author");
+    addAuthorInput.setAttribute("name", "author");
+    form.appendChild(addAuthorInput);
+
+    // create pages label and input
+    const addPagesLabel = document.createElement("label");
+    addPagesLabel.setAttribute("for", "pages");
+    addPagesLabel.textContent = "Pages:";
+    form.appendChild(addPagesLabel);
+    const addPagesInput = document.createElement("input");
+    addPagesInput.setAttribute("type", "number");
+    addPagesInput.setAttribute("id", "pages");
+    addPagesInput.setAttribute("name", "pages");
+    form.appendChild(addPagesInput);
+
+    // create read label and input
+    const addReadLabel = document.createElement("label");
+    addReadLabel.setAttribute("for", "read");
+    addReadLabel.textContent = "Read?";
+    form.appendChild(addReadLabel);
+    const addReadInput = document.createElement("input");
+    addReadInput.setAttribute("type", "checkbox");
+    addReadInput.setAttribute("id", "read");
+    addReadInput.setAttribute("name", "read");
+    form.appendChild(addReadInput);
+
+    // create submit button
+    const submitButton = document.createElement("button");
+    submitButton.setAttribute("type", "submit");
+    submitButton.classList.add("submit");
+    submitButton.textContent = "Add Book";
+    form.appendChild(submitButton);
+
+    submitButton.addEventListener("click", (event) => {
+        event.preventDefault();
+    
+        const title = addTitleInput.value;
+        const author = addAuthorInput.value;
+        const pages = addPagesInput.value;
+        const read = addReadInput.checked ? "Yes" : "No";
+    
+        addBookToLibrary(title, author, pages, read);
+        ghostCard.classList.remove("add", "card");
+        ghostCard.classList.add("ghost", "card");
+        form.remove();
+        ghostCard.appendChild(newBookBtn);
+        displayBooks();
+        console.log(myLibrary);
+        console.log(`title: ${title} author: ${author} pages: ${pages} read: ${read}`);
+    })
 })
 
 console.log(myLibrary);
-
-
-/*
-    when the form is submitted
-    add a new card div containing the info
-
-    save inputs 
-    update displays
-
-    loop through library array and display divs for each book
- */
-
-/*
-    already an "add book" card, which is actually the form
-    filling it out and clicking it adds the book before the form
- */

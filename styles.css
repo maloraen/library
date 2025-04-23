@@ -23,7 +23,7 @@ html {
 }
 
 .card {
-    border: 1px solid black;
+    border: 3px solid black;
     border-radius: 10px;
     height: 300px;
     width: 250px;
@@ -34,6 +34,34 @@ html {
     align-items: center;
 }
 
-.card > * {
+.ghost {
+    border: 1px solid lightgrey;
+}
+
+.ghost>* {
+    opacity: 0;
+    pointer-events: none;
+}
+
+.ghost:hover {
+    border: 3px solid lightgrey;
+}
+
+.ghost:hover>* {
+    opacity: 1;
+    pointer-events: auto;
+}
+
+.ghost #new-book {
+    opacity: 0;
+    pointer-events: none;
+}
+
+.ghost:hover #new-book {
+    opacity: 1;
+    pointer-events: auto;
+}
+
+.card>* {
     margin: 5px;
 }

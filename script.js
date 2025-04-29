@@ -14,6 +14,10 @@ function Book(title, author, pages, read = false) {
     this["Read?"] = read;
 }
 
+Book.prototype.toggleReadStatus = function() {
+    this["Read?"] = (this["Read?"] === "Yes") ? "No" : "Yes";
+}
+
 function addBookToLibrary(title, author, pages, read = false) {
     const newBook = new Book(title, author, pages, read);
     myLibrary.push(newBook);
@@ -141,9 +145,9 @@ function removeBook(id) {
 }
 
 function markRead(id) {
-    myLibrary.forEach((book) => {
+    myLibrary.find((book) => {
         if (book.id == id) {
-            book["Read?"] = (book["Read?"] == "Yes") ? "No" : "Yes";
+            book.toggleReadStatus();
         }
     })
     displayBooks();

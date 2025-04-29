@@ -20,10 +20,17 @@ function addBookToLibrary(title, author, pages, read = false) {
 }
 
 function createCard(book) {
-    // create new card
     const card = document.createElement("div");
     card.classList.add("book", "card");
     card.dataset.id = book.id;
+
+    removeBtn = document.createElement("button");
+    removeBtn.textContent = "Remove Book";
+    removeBtn.classList.add("remove-button");
+    
+    readBtn = document.createElement("button");
+    readBtn.textContent = book["Read?"];
+    readBtn.classList.add("read-button");
 
     // fill in contents
     for (const [key, value] of Object.entries(book)) {
@@ -33,11 +40,26 @@ function createCard(book) {
         header.textContent = key;
         // create the paragraphs with the corresponding info
         const paragraph = document.createElement("p");
-        paragraph.textContent = value;
+        if (key != "Read?") {
+            paragraph.textContent = value;
+        }
         // add each header/paragraph pair to the card
         card.appendChild(header);
         card.appendChild(paragraph);
     }
+    // mark as read
+    card.appendChild(readBtn);
+    readBtn.addEventListener("click", () => {
+        markRead(book.id);
+    })
+    // remove book
+    card.appendChild(removeBtn);
+    removeBtn.addEventListener("click", () => {
+        removeBook(book.id);
+    })
+
+
+
     // add new card before the ghost card
     libraryContainer.insertBefore(card, ghostCard);
 }
@@ -111,3 +133,18 @@ newBookBtn.addEventListener("click", () => {
 
     createForm();
 })
+
+function removeBook(id) {
+    const index = myLibrary.findIndex(book => book.id === id);
+    myLibrary.splice(index, 1);
+    displayBooks(); // update display (only shows books in array)
+}
+
+function markRead(id) {
+    myLibrary.forEach((book) => {
+        if (book.id == id) {
+            book["Read?"] = (book["Read?"] == "Yes") ? "No" : "Yes";
+        }
+    })
+    displayBooks();
+}
